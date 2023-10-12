@@ -81,6 +81,7 @@ const corePassword = core.getInput('cert-password');
 const coreSha1 = core.getInput('cert-sha1');
 const coreTimestampServer = core.getInput('timestamp-server');
 const coreCertDesc = core.getInput('cert-description');
+const coreDebug = core.getInput('debug') === 'true';
 // Supported files
 const supportedFileExt = [
     '.dll',
@@ -182,6 +183,9 @@ function trySign(file) {
                     let command = `"${signtool}" sign /sm /t ${coreTimestampServer} /sha1 "${coreSha1}"`;
                     if (coreCertDesc !== '')
                         command = command.concat(` /d "${coreCertDesc}"`);
+                    if (coreDebug === true)
+                        command = command.concat(` /debug`)
+                        core.info(`set debug flag`)
                     command = command.concat(` "${file}"`);
                     core.info(`signing file: ${file}\nCommand: ${command}`);
                     const signCommandResult = yield execAsync(command);
